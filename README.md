@@ -10,6 +10,7 @@ The workspace contains 4 folders, where:
 - `policies`: the folder to save the generated Apigee Policies
 - `swagger`: the folder to save the original Swagger 2.0 API configuration
 - `templates`: the folder to save the xml Apigee Policies templates
+- `promts`: the folder to save the promts used to generate some files on ChatGPT 4
 
 ## Dependency Management
 
