@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OASValidation continueOnError="false" enabled="true" name=SwaggerPetstore2.0>
+    <DisplayName>Swagger Petstore 2.0</DisplayName>
+    <Properties/>
+    <Source>request</Source>
+    <Options>
+        <ValidateMessageBody>true</ValidateMessageBody>
+    </Options>
+    <OASResource>oas://openapi.yaml</OASResource>
+</OASValidation>
