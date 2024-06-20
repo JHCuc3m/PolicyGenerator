@@ -1,3 +1,12 @@
+/*
+
+Author: Jiahao Chen 
+Date: 2024-06-20
+Purpose: This script generates an XML policy that validates the message parameters defined in the Swagger file (should be OpenAPI 3.0).
+Version: 1.0
+
+*/
+
 const fs = require("fs");
 const yaml = require("js-yaml");
 const xmlTemplate = require("../templates/messageValidationTemplate.js"); // Import the XML template
@@ -12,7 +21,7 @@ function generateXMLPolicy(openAPIData) {
   const name = openAPIData.info.title.replace(/\s/g, ""); // Simplistic conversion to a valid XML name
   const displayName = openAPIData.info.title;
   const source = "request"; // Or "response", depending on your needs
-  const oasResource = "oas://openapi.yaml"; // This should be pointing where OpenAPI data is stored in Apigee configuration
+  const oasResource = "oas://openapi.yaml"; // This should be pointing where OpenAPI data is stored in Apigee configuration, this should be OpenAPI 3.0
 
   // Substitute values in the XML template
   const xmlPolicy = xmlTemplate
