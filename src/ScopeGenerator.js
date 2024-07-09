@@ -1,58 +1,97 @@
-/*
-
-Author: Jiahao Chen 
-Date: 2024-06-13
-Purpose: This script generates an XML policy that contains all the scopes defined in the Swagger file.
-Version: 1.0
-
-*/
-
 const fs = require("fs");
+const path = require("path");
 const yaml = require("js-yaml");
 const xmlTemplate = require("../templates/scopeTemplate.js"); // Import the XML template
 
-// Read the Swagger YAML file
-const swaggerFile = "../swagger/petstore.yaml";
-const swaggerData = yaml.load(fs.readFileSync(swaggerFile, "utf8"));
+// Constants
+const SWAGGER_FILE = "../swagger/petstore.yaml";
+const POLICIES_DIR = "../policies";
+const POLICY_FILE = path.join(POLICIES_DIR, "scope.xml");
 
-// Function to generate XML policy
-function generateXMLPolicy(swaggerData) {
-  // Extract scopes from the security definitions
-  const securitySchemes = swaggerData.components.securitySchemes;
-  let scopes = [];
+// Main function to generate and save XML policy
+function main() {
+  const swaggerData = loadSwaggerFile(SWAGGER_FILE);
+  const scopes = extractScopes(swaggerData);
+  const xmlPolicy = generateXMLPolicy(scopes);
+  saveXMLPolicy(POLICIES_DIR, POLICY_FILE, xmlPolicy);
+  console.log(xmlPolicy);
+}
+
+/**
+ * Loads the Swagger YAML file.
+ * @param {string} filePath - The path to the Swagger file.
+ * @returns {object} - The parsed Swagger data.
+ */
+function loadSwaggerFile(filePath) {
+  try {
+    const fileContents = fs.readFileSync(filePath, "utf8");
+    return yaml.load(fileContents);
+  } catch (err) {
+    console.error(`Error reading Swagger file: ${err.message}`);
+    process.exit(1);
+  }
+}
+
+/**
+ * Extracts scopes from the Swagger data.
+ * @param {object} swaggerData - The parsed Swagger data.
+ * @returns {array} - An array of scopes.
+ */
+function extractScopes(swaggerData) {
+  const scopes = [];
+  const securitySchemes = swaggerData.components.securitySchemes || {};
 
   for (const scheme in securitySchemes) {
     if (securitySchemes[scheme].type === "oauth2") {
-      const flows = securitySchemes[scheme].flows;
+      const flows = securitySchemes[scheme].flows || {};
       for (const flow in flows) {
-        scopes = scopes.concat(Object.keys(flows[flow].scopes));
+        scopes.push(...Object.keys(flows[flow].scopes || {}));
       }
     }
   }
 
-  // Join scopes with a space
+  return scopes;
+}
+
+/**
+ * Generates the XML policy from the given scopes.
+ * @param {array} scopes - An array of scopes.
+ * @returns {string} - The generated XML policy.
+ */
+function generateXMLPolicy(scopes) {
   const scopeString = scopes.join(" ");
-
-  // Substitute the scopeString in the XML template
-  const xmlPolicy = xmlTemplate.replace("${scopeString}", scopeString);
-
-  return xmlPolicy;
+  return xmlTemplate.replace("${scopeString}", scopeString);
 }
 
-// Generate the XML policy
-const xmlPolicy = generateXMLPolicy(swaggerData);
-
-// Output the XML policy
-console.log(xmlPolicy);
-
-// Optionally, save the XML policy to a file
-//Create file if does not exist
-if (!fs.existsSync("../policies")) {
-  fs.mkdirSync("../policies");
+/**
+ * Ensures that all directories in the given path exist, creating them if necessary.
+ * @param {string} targetDir - The target directory path.
+ */
+function ensureDirectoriesExist(targetDir) {
+  const resolvedPath = path.resolve(targetDir);
+  try {
+    fs.mkdirSync(resolvedPath, { recursive: true });
+    console.log(`Successfully ensured directories exist: ${resolvedPath}`);
+  } catch (err) {
+    console.error(`Error creating directories: ${err.message}`);
+  }
 }
 
-if (!fs.existsSync("../policies/scope.xml")) {
-  fs.writeFileSync("../policies/scope.xml", "", "utf8");
+/**
+ * Saves the generated XML policy to a file.
+ * @param {string} dirPath - The directory where the policy file will be saved.
+ * @param {string} filePath - The path to the policy file.
+ * @param {string} xmlPolicy - The generated XML policy content.
+ */
+function saveXMLPolicy(dirPath, filePath, xmlPolicy) {
+  ensureDirectoriesExist(dirPath);
+  try {
+    fs.writeFileSync(filePath, xmlPolicy, "utf8");
+    console.log(`Policy saved to ${filePath}`);
+  } catch (err) {
+    console.error(`Error saving policy file: ${err.message}`);
+  }
 }
 
-fs.writeFileSync("../policies/scope.xml", xmlPolicy, "utf8");
+// Execute the main function
+main();

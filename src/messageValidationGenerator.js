@@ -39,7 +39,7 @@ function loadOpenAPIFile(filePath) {
 function generateXMLPolicy(openAPIData) {
   const name = openAPIData.info.title.replace(/\s/g, ""); // Simplistic conversion to a valid XML name
   const displayName = openAPIData.info.title;
-  const source = "request"; // Or "response", depending on your needs
+  const source = "request"; // Or 'response', depending on your needs
   const oasResource = "oas://openapi.yaml"; // This should be pointing where OpenAPI data is stored in Apigee configuration
 
   // Substitute values in the XML template
