@@ -1,20 +1,18 @@
-Following the below javascript example:
-
 const fs = require("fs");
 const path = require("path");
 const yaml = require("js-yaml");
-const xmlTemplate = require("../templates/scopeTemplate.js"); // Import the XML template
+const xmlTemplate = require("../templates/proxyConfigurationTemplate"); // Import the XML template
 
 // Constants
 const SWAGGER_FILE = "../swagger/petstore.yaml";
-const POLICIES_DIR = "../policies";
-const POLICY_FILE = path.join(POLICIES_DIR, "scope.xml");
+const POLICIES_DIR = "../policies/proxy";
+const POLICY_FILE = path.join(POLICIES_DIR, "default.xml");
 
 // Main function to generate and save XML policy
 function main() {
   const swaggerData = loadSwaggerFile(SWAGGER_FILE);
-  const scopes = extractScopes(swaggerData);
-  const xmlPolicy = generateXMLPolicy(scopes);
+  const basePath = extractBasePath(swaggerData);
+  const xmlPolicy = generateXMLPolicy(basePath);
   saveXMLPolicy(POLICIES_DIR, POLICY_FILE, xmlPolicy);
   console.log(xmlPolicy);
 }
@@ -35,34 +33,26 @@ function loadSwaggerFile(filePath) {
 }
 
 /**
- * Extracts scopes from the Swagger data.
+ * Extracts base path from the Swagger data.
  * @param {object} swaggerData - The parsed Swagger data.
- * @returns {array} - An array of scopes.
+ * @returns {string} - The base path.
  */
-function extractScopes(swaggerData) {
-  const scopes = [];
-  const securitySchemes = swaggerData.components.securitySchemes || {};
-
-  for (const scheme in securitySchemes) {
-    if (securitySchemes[scheme].type === "oauth2") {
-      const flows = securitySchemes[scheme].flows || {};
-      for (const flow in flows) {
-        scopes.push(...Object.keys(flows[flow].scopes || {}));
-      }
-    }
+function extractBasePath(swaggerData) {
+  const servers = swaggerData.servers || [];
+  if (servers.length > 0) {
+    const url = new URL(servers[0].url);
+    return url.pathname;
   }
-
-  return scopes;
+  return "/";
 }
 
 /**
- * Generates the XML policy from the given scopes.
- * @param {array} scopes - An array of scopes.
+ * Generates the XML policy from the given base path.
+ * @param {string} basePath - The base path.
  * @returns {string} - The generated XML policy.
  */
-function generateXMLPolicy(scopes) {
-  const scopeString = scopes.join(" ");
-  return xmlTemplate.replace("${scopeString}", scopeString);
+function generateXMLPolicy(basePath) {
+  return xmlTemplate.replace("${basePath}", basePath);
 }
 
 /**
@@ -97,22 +87,3 @@ function saveXMLPolicy(dirPath, filePath, xmlPolicy) {
 
 // Execute the main function
 main();
-
-Generate a similar javascript file called RaiseFaultGenerator.js that generates an xml Apigee policy configuration file with the following template called RaiseFaultTemplate.js and with replacement of name, DisplayName, StatusCode, ReasonPhrase and IgnoreUnresolvedVariables.
-Create a separate javascript file from where you import the XML template:
-
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RaiseFault async="false" continueOnError="false" enabled="true" name="RaiseFault">
-    <DisplayName>RaiseFault</DisplayName>
-    <Properties/>
-    <FaultResponse>
-        <Set>
-            <Headers/>
-            <Payload contentType="text/plain"/>
-            <StatusCode>500</StatusCode>
-            <ReasonPhrase>Server Error</ReasonPhrase>
-        </Set>
-    </FaultResponse>
-    <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
-</RaiseFault>
-

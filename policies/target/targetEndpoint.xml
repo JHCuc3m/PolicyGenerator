@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<TargetEndpoint name="default">
+  <HTTPTargetConnection>
+    <URL>https://petstore.swagger.io/v2</URL>
+  </HTTPTargetConnection>
+  <FaultRules>
+    
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 400) and (response.status.code != 404) and (response.status.code != 422) and (response.status.code != 200) and (proxy.pathsuffix Matches "/pet") and (request.verb = "PUT")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 400) and (response.status.code != 422) and (response.status.code != 200) and (proxy.pathsuffix Matches "/pet") and (request.verb = "POST")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (response.status.code != 400) and (proxy.pathsuffix Matches "/pet/findByStatus") and (request.verb = "GET")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (response.status.code != 400) and (proxy.pathsuffix Matches "/pet/findByTags") and (request.verb = "GET")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (response.status.code != 400) and (response.status.code != 404) and (proxy.pathsuffix Matches "/pet/**") and (request.verb = "GET")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 400) and (response.status.code != 422) and (response.status.code != 200) and (proxy.pathsuffix Matches "/pet/**") and (request.verb = "POST")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 400) and (response.status.code != 404) and (response.status.code != 200) and (proxy.pathsuffix Matches "/pet/**") and (request.verb = "DELETE")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (proxy.pathsuffix Matches "/pet/**/uploadImage") and (request.verb = "POST")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (proxy.pathsuffix Matches "/store/inventory") and (request.verb = "GET")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (response.status.code != 400) and (proxy.pathsuffix Matches "/store/order") and (request.verb = "POST")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (response.status.code != 400) and (response.status.code != 404) and (proxy.pathsuffix Matches "/store/order/**") and (request.verb = "GET")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 400) and (response.status.code != 404) and (response.status.code != 200) and (proxy.pathsuffix Matches "/store/order/**") and (request.verb = "DELETE")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (proxy.pathsuffix Matches "/user") and (request.verb = "POST")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (proxy.pathsuffix Matches "/user/createWithArray") and (request.verb = "POST")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (proxy.pathsuffix Matches "/user/createWithList") and (request.verb = "POST")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (response.status.code != 400) and (proxy.pathsuffix Matches "/user/login") and (request.verb = "GET")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (proxy.pathsuffix Matches "/user/logout") and (request.verb = "GET")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (response.status.code != 400) and (response.status.code != 404) and (proxy.pathsuffix Matches "/user/**") and (request.verb = "GET")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 400) and (response.status.code != 404) and (response.status.code != 200) and (proxy.pathsuffix Matches "/user/**") and (request.verb = "PUT")</Condition>
+    </FaultRule>
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 400) and (response.status.code != 404) and (response.status.code != 200) and (proxy.pathsuffix Matches "/user/**") and (request.verb = "DELETE")</Condition>
+    </FaultRule>
+  </FaultRules>
+</TargetEndpoint>

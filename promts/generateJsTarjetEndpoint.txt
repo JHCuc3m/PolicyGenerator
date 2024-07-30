@@ -1,0 +1,61 @@
+I need a javascript that generates a xml tarjet endpoint Apigee configuration file from a OpenAPI file. For each endpoint operation raisefault if the status code is not defined in the OpenAPI file and has the same subpath. Below is a example: 
+
+<TargetEndpoint name="default">
+
+  <HTTPTargetConnection>
+    <URL>https://petstore.swagger.io/v2</URL>
+  </HTTPTargetConnection>
+
+  <FaultRules>
+    <!-- FaultRule for 400 Error -->
+    <FaultRule>
+      <Step>
+        <Name>RaiseFault</Name>
+      </Step>
+      <Condition>(response.status.code != 200) and (response.status.code != 400) and (proxy.pathsuffix Matches "/pet/**/uploadImage") and (request.verb = "post")</Condition>
+    </FaultRule>
+  </FaultRules>
+</TargetEndpoint>
+
+  /pet/{petId}/uploadImage:
+    post:
+      tags:
+        - pet
+      summary: uploads an image
+      operationId: uploadFile
+      parameters:
+        - name: petId
+          in: path
+          description: ID of pet to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                additionalMetadata:
+                  type: string
+                  description: Additional data to pass to server
+                file:
+                  type: string
+                  description: file to upload
+                  format: binary
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponse"
+        "400":
+          description: Invalid ID supplied
+          content: {}
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+

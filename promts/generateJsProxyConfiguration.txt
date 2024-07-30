@@ -1,5 +1,4 @@
 Following the below javascript example:
-
 const fs = require("fs");
 const path = require("path");
 const yaml = require("js-yaml");
@@ -29,7 +28,7 @@ function loadSwaggerFile(filePath) {
     const fileContents = fs.readFileSync(filePath, "utf8");
     return yaml.load(fileContents);
   } catch (err) {
-    console.error(`Error reading Swagger file: ${err.message}`);
+    console.error(Error reading Swagger file: ${err.message});
     process.exit(1);
   }
 }
@@ -73,9 +72,9 @@ function ensureDirectoriesExist(targetDir) {
   const resolvedPath = path.resolve(targetDir);
   try {
     fs.mkdirSync(resolvedPath, { recursive: true });
-    console.log(`Successfully ensured directories exist: ${resolvedPath}`);
+    console.log(Successfully ensured directories exist: ${resolvedPath});
   } catch (err) {
-    console.error(`Error creating directories: ${err.message}`);
+    console.error(Error creating directories: ${err.message});
   }
 }
 
@@ -89,30 +88,65 @@ function saveXMLPolicy(dirPath, filePath, xmlPolicy) {
   ensureDirectoriesExist(dirPath);
   try {
     fs.writeFileSync(filePath, xmlPolicy, "utf8");
-    console.log(`Policy saved to ${filePath}`);
+    console.log(Policy saved to ${filePath});
   } catch (err) {
-    console.error(`Error saving policy file: ${err.message}`);
+    console.error(Error saving policy file: ${err.message});
   }
 }
 
 // Execute the main function
 main();
 
-Generate a similar javascript file called RaiseFaultGenerator.js that generates an xml Apigee policy configuration file with the following template called RaiseFaultTemplate.js and with replacement of name, DisplayName, StatusCode, ReasonPhrase and IgnoreUnresolvedVariables.
-Create a separate javascript file from where you import the XML template:
+Generate a similar javascript file called proxyConfigurationGenerator.js that generates an xml Apigee policy configuration file with the following template called proxyConfigurationTemplate.js and with replacement of Base path. Create a separate javascript file from where you import the XML template:
 
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RaiseFault async="false" continueOnError="false" enabled="true" name="RaiseFault">
-    <DisplayName>RaiseFault</DisplayName>
-    <Properties/>
-    <FaultResponse>
-        <Set>
-            <Headers/>
-            <Payload contentType="text/plain"/>
-            <StatusCode>500</StatusCode>
-            <ReasonPhrase>Server Error</ReasonPhrase>
-        </Set>
-    </FaultResponse>
-    <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
-</RaiseFault>
+<ProxyEndpoint name="default">
+  <PreFlow name="PreFlow">
+    <Request>
+      <Step>
+        <Name>verify-api-key</Name>
+      </Step>
+
+      <Step>
+        <Name>OAuthV2-VerifyAccessToken</Name>
+      </Step>
+
+      <Step>
+        <Name>remove-query-param-apikey</Name>
+      </Step>
+
+      <Step>
+        <Name>impose-quota</Name>
+      </Step>
+
+      <Step>
+        <Name>OAuthV2-VerifyAccessToken</Name>
+      </Step>
+
+      <Step> 
+        <Name>openAPIpolicy</Name>
+      </Step>
+
+    </Request>
+
+    <Response>
+      
+      <Step>
+        <Name>JSONtoXML</Name>
+      </Step>
+
+      <Step> 
+        <Name>openAPIpolicy</Name>
+        <Condition>(response.status.code != 200) and (response.status.code != 500)</Condition>
+      </Step>
+
+    </Response>
+  </PreFlow>
+  <HTTPProxyConnection>
+    <BasePath>helloworld</BasePath>
+  </HTTPProxyConnection>
+  <RouteRule name="default-route">
+    <TargetEndpoint>default</TargetEndpoint>
+  </RouteRule>
+</ProxyEndpoint>
+
 
