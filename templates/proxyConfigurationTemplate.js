@@ -17,10 +17,6 @@ module.exports = `<ProxyEndpoint name="default">
         <Name>impose-quota</Name>
       </Step>
 
-      <Step>
-        <Name>OAuthV2-VerifyAccessToken</Name>
-      </Step>
-
       <Step> 
         <Name>openAPIpolicy</Name>
       </Step>

@@ -18,3 +18,7 @@ Add a dependency: Use npm install <package-name> --save.
 Remove a dependency: Use npm uninstall <package-name> --save.
 Update dependencies: Use npm update.
 Install all dependencies: If you have a package.json file and need to install all listed dependencies, use npm install.
+
+Conver to OpenAPI 3.0
+Have json and Yaml version
+token in header
